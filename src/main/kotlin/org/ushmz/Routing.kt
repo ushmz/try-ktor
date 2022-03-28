@@ -16,6 +16,7 @@ fun Application.configureRouting() {
 			call.respondText("Keep greeting to world forever!")
 		}
 	}
+
 	// answer
 	routing {
 		// List all answers.
@@ -26,22 +27,25 @@ fun Application.configureRouting() {
 
 		// Get answer by ID
 		get("/answer/{id}") {
-			call.respondText("Get answer by ID", ContentType.Text.Plain, HttpStatusCode.OK)
+			val ansID = call.parameters["id"]
+			call.respondText("Get answer by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
 		}
 
 		// Create new answer.
-		post("/answer/{id}") {
-			call.respondText("Get answer by ID", ContentType.Text.Plain, HttpStatusCode.OK)
+		post("/answer") {
+			call.respondText("Create answer", ContentType.Text.Plain, HttpStatusCode.OK)
 		}
 
 		// Update answer by ID
 		put("/answer/{id}") {
-			call.respondText("Get answer by ID", ContentType.Text.Plain, HttpStatusCode.OK)
+			val ansID = call.parameters["id"]
+			call.respondText("Update answer by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
 		}
 
 		// Delete answer by ID
 		delete("/answer/{id}") {
-			call.respondText("Get answer by ID", ContentType.Text.Plain, HttpStatusCode.OK)
+			val ansID = call.parameters["id"]
+			call.respondText("Delete answer by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
 		}
 	}
 
@@ -55,22 +59,25 @@ fun Application.configureRouting() {
 
 		// Get task by ID.
 		get("/task/{id}") {
-			call.respondText("Get task by ID", ContentType.Text.Plain, HttpStatusCode.OK)
+			val ansID = call.parameters["id"]
+			call.respondText("Get task by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
 		}
 
 		// Create new task.
-		post("/task/{id}") {
-			call.respondText("Create task by ID", ContentType.Text.Plain, HttpStatusCode.Created)
+		post("/task") {
+			call.respondText("Create new task", ContentType.Text.Plain, HttpStatusCode.Created)
 		}
 
 		// Update task by ID.
 		put("/task/{id}") {
-			call.respondText("Update task by ID", ContentType.Text.Plain, HttpStatusCode.Accepted)
+			val ansID = call.parameters["id"]
+			call.respondText("Update task by ID $ansID", ContentType.Text.Plain, HttpStatusCode.Accepted)
 		}
 
 		// Delete task by ID.
 		delete("/task/{id}") {
-			call.respondText("Delete task by ID", ContentType.Text.Plain, HttpStatusCode.NoContent)
+			val ansID = call.parameters["id"]
+			call.respondText("Delete task by ID $ansID", ContentType.Text.Plain, HttpStatusCode.NoContent)
 		}
 	}
 
@@ -84,22 +91,25 @@ fun Application.configureRouting() {
 
 		// Get user by ID.
 		get("/user/{id}") {
-			call.respondText("Get user by ID", ContentType.Text.Plain, HttpStatusCode.OK)
+			val ansID = call.parameters["id"]
+			call.respondText("Get user by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
 		}
 
 		// Create new user.
-		post("/user/{id}") {
-			call.respondText("Create user by ID", ContentType.Text.Plain, HttpStatusCode.Created)
+		post("/user}") {
+			call.respondText("Create new user", ContentType.Text.Plain, HttpStatusCode.Created)
 		}
 
 		// Update user by ID.
 		put("/user/{id}") {
-			call.respondText("Update user by ID", ContentType.Text.Plain, HttpStatusCode.Accepted)
+			val ansID = call.parameters["id"]
+			call.respondText("Update user by ID $ansID", ContentType.Text.Plain, HttpStatusCode.Accepted)
 		}
 
 		// Delete user by ID.
 		delete("/user/{id}") {
-			call.respondText("Delete user by ID", ContentType.Text.Plain, HttpStatusCode.NoContent)
+			val ansID = call.parameters["id"]
+			call.respondText("Delete user by ID $ansID", ContentType.Text.Plain, HttpStatusCode.NoContent)
 		}
 	}
 }
