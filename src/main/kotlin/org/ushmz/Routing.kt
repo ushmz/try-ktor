@@ -14,7 +14,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import kotlinx.serialization.Serializable
-import org.ushmz.interfaces.controller.TaskController
 
 fun Application.configureRouting() {
     // Starting point for a Ktor app:
