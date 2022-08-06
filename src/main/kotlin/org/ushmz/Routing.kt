@@ -1,115 +1,101 @@
-package org.ushmz
+package org.ushmz // ktlint-disable filename
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.resources.Resource
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.resources.delete
+import io.ktor.server.resources.get
+import io.ktor.server.resources.post
+import io.ktor.server.resources.put
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import kotlinx.serialization.Serializable
+import org.ushmz.interfaces.controller.TaskController
 
 fun Application.configureRouting() {
+    // Starting point for a Ktor app:
+    routing {
+        get("/") { call.respondText("Hello World!") }
+        get("/greet") { call.respondText("Keep greeting to world forever!") }
 
-	// Starting point for a Ktor app:
-	routing {
-		get("/") {
-			call.respondText("Hello World!")
-		}
-		get("/greet") {
-			call.respondText("Keep greeting to world forever!")
-		}
-	}
+        route("/tasks") {
+            get("/") {
+                val tasks = TaskController().list()
+                call.respond(status = HttpStatusCode.OK, tasks)
+            }
 
-	// answer
-	routing {
-		// List all answers.
-		get("/answer") {
-			call.response.status(HttpStatusCode.OK)
-			call.respondText("Get all answers")
-		}
+            @Serializable
+            @Resource("/{taskID}")
+            data class GetTaskRequest(var taskID: Int)
+            get<GetTaskRequest> { req ->
+                val task = TaskController().get(req.taskID)
+                call.respond(status = HttpStatusCode.OK, task)
+            }
 
-		// Get answer by ID
-		get("/answer/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Get answer by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
-		}
+            @Serializable
+            @Resource("/")
+            data class PostTaskRequest(var name: String, var date: String)
+            post<PostTaskRequest> { req ->
+                val task = TaskController().create(req.name, req.date)
+                call.respond(status = HttpStatusCode.Created, task)
+            }
 
-		// Create new answer.
-		post("/answer") {
-			call.respondText("Create answer", ContentType.Text.Plain, HttpStatusCode.OK)
-		}
+            @Serializable
+            @Resource("/{taskID}")
+            data class PutTaskRequest(val taskID: Int, val name: String, val due: String)
+            put<PutTaskRequest> { req ->
+                TaskController().update(req.taskID, req.name, req.due)
+                call.respond(status = HttpStatusCode.OK, "")
+            }
 
-		// Update answer by ID
-		put("/answer/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Update answer by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
-		}
+            @Serializable
+            @Resource("/{taskID}")
+            data class DeleteTaskRequest(var taskID: Int)
+            delete<DeleteTaskRequest> { req ->
+                TaskController().delete(req.taskID)
+                call.respondText("Deleted", status = HttpStatusCode.OK)
+            }
 
-		// Delete answer by ID
-		delete("/answer/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Delete answer by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
-		}
-	}
+            route("/{taskID}/steps") {
+                @Serializable
+                @Resource("/")
+                data class ListStepsRequest(var taskID: Int)
+                get<ListStepsRequest> { req ->
+                    call.respond(status = HttpStatusCode.OK, "")
+                }
 
-	// task
-	routing {
-		// List all tasks.
-		get("/task") {
-			call.response.status(HttpStatusCode.OK)
-			call.respondText("Get all tasks")
-		}
+                @Serializable
+                @Resource("/{setpID}")
+                data class GetStepRequest(var taskID: Int, var setpID: Int)
+                get<GetStepRequest> { req ->
+                    call.respond(status = HttpStatusCode.OK, "")
+                }
 
-		// Get task by ID.
-		get("/task/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Get task by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
-		}
+                @Serializable
+                @Resource("/")
+                data class PostStepRequest(var taskID: Int, var name: String, var date: String)
+                post<PostTaskRequest> { req ->
+                    call.respond(status = HttpStatusCode.Created, "")
+                }
 
-		// Create new task.
-		post("/task") {
-			call.respondText("Create new task", ContentType.Text.Plain, HttpStatusCode.Created)
-		}
+                @Serializable
+                @Resource("/{setpID}")
+                data class PutStepRequest(var taskID: Int, var setpID: Int, var name: String, var date: String)
+                put<PutTaskRequest> { req ->
+                    call.respond(status = HttpStatusCode.OK, "")
+                }
 
-		// Update task by ID.
-		put("/task/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Update task by ID $ansID", ContentType.Text.Plain, HttpStatusCode.Accepted)
-		}
-
-		// Delete task by ID.
-		delete("/task/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Delete task by ID $ansID", ContentType.Text.Plain, HttpStatusCode.NoContent)
-		}
-	}
-
-	// user
-	routing {
-		// List all users.
-		get("/user") {
-			call.response.status(HttpStatusCode.OK)
-			call.respondText("Get all users")
-		}
-
-		// Get user by ID.
-		get("/user/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Get user by ID $ansID", ContentType.Text.Plain, HttpStatusCode.OK)
-		}
-
-		// Create new user.
-		post("/user}") {
-			call.respondText("Create new user", ContentType.Text.Plain, HttpStatusCode.Created)
-		}
-
-		// Update user by ID.
-		put("/user/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Update user by ID $ansID", ContentType.Text.Plain, HttpStatusCode.Accepted)
-		}
-
-		// Delete user by ID.
-		delete("/user/{id}") {
-			val ansID = call.parameters["id"]
-			call.respondText("Delete user by ID $ansID", ContentType.Text.Plain, HttpStatusCode.NoContent)
-		}
-	}
+                @Serializable
+                @Resource("/{setpID}")
+                data class DeleteStepRequest(var taskID: Int, var setpID: Int)
+                delete<DeleteStepRequest> { req ->
+                    call.respond(status = HttpStatusCode.OK, "")
+                }
+            }
+        }
+    }
 }
